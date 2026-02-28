@@ -1,21 +1,11 @@
-# Compiled class files
+# Ignore compiled Java class files
 *.class
-
-# Log files
-*.log
-
-# Build directories
+target/
 bin/
-build/
 out/
 
-# IntelliJ
-.idea/
-*.iml
-
-# VS Code
+# Ignore IDE-specific settings (now that we're use Maven)
 .vscode/
-
-# OS generated files
-.DS_Store
-Thumbs.db
+.classpath
+.project
+.settings/
