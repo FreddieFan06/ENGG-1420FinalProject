@@ -1,0 +1,5 @@
+eventId,title,dateTime,location,capacity,status,eventType,topic,speakerName,ageRestriction
+E001,Java Workshop,2026-03-15T10:00,Lab A,2,ACTIVE,WORKSHOP,Generics,,
+E002,AI Seminar,2026-03-20T14:30,Hall 1,100,ACTIVE,SEMINAR,,Dr. Smith,
+E003,Rock Concert,2026-04-01T19:00,Stadium,500,ACTIVE,CONCERT,,,18+
+E004,Old Python,2026-01-01T09:00,Room 302,10,CANCELLED,WORKSHOP,Basics,,

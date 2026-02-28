@@ -1,0 +1,4 @@
+userId,name,email,userType
+U101,Alice Student,alice@uni.edu,STUDENT
+U102,Bob Staff,bob@uni.edu,STAFF
+U103,Charlie Guest,charlie@gmail.com,GUEST
