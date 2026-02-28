@@ -4,7 +4,7 @@ target/
 bin/
 out/
 
-# Ignore IDE-specific settings (now that we're use Maven)
+# Ignore IDE-specific settings (now that we're using Maven)
 .vscode/
 .classpath
 .project
