@@ -1,22 +1,54 @@
 package main;
 
+import gui.BookingPane;
+import gui.EventPane;
+import gui.UserPane;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
+import manager.BookingManager;
+import manager.EventManager;
+import manager.UserManager;
+import manager.WaitlistManager;
+import ui.booking.BookingWorkflowView;
 
 public class Main extends Application {
+
+    private UserManager userManager;
+    private EventManager eventManager;
+    private WaitlistManager waitlistManager;
+    private BookingManager bookingManager;
+
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button("ENGG-1420 Final Project Beginning!");
-        btn.setOnAction(e -> System.out.println("JavaFX is alive!"));
-        
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
-        
-        primaryStage.setScene(new Scene(root, 400, 250));
-        primaryStage.setTitle("Campus Event System");
+
+        userManager = new UserManager();
+        eventManager = new EventManager();
+        waitlistManager = new WaitlistManager();
+        bookingManager = new BookingManager(
+                userManager,
+                eventManager,
+                waitlistManager);
+
+        TabPane root = new TabPane();
+
+        root.getTabs().add(new Tab("Users",
+                new UserPane(userManager)));
+
+        root.getTabs().add(new Tab("Events",
+                new EventPane(eventManager)));
+
+        root.getTabs().add(new Tab("Bookings",
+                new BookingPane(userManager, eventManager, bookingManager)));
+
+        root.getTabs().add(new Tab("Booking Workflow",
+                BookingWorkflowView.build()));
+
+        Scene scene = new Scene(root, 700, 500);
+        primaryStage.setTitle("Campus Event Booking System");
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
