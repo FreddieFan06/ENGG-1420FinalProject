@@ -5,17 +5,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Collection;
 
+import validation.UserValidator;
+import exception.ValidationException;
+
 public class UserManager {
+
     private Map<String, User> usersRegistry;
+
+    private final UserValidator userValidator;
 
     public UserManager() {
         this.usersRegistry = new HashMap<>();
+
+        this.userValidator = new UserValidator();
     }
 
     public boolean addUser(User user) {
-        if(user == null || usersRegistry.containsKey(user.getUserId()))
-            return false;
-        
+
+        userValidator.validateAddUser(user);
+
+        if (usersRegistry.containsKey(user.getUserId())) {
+            throw new ValidationException("User ID already exists.");
+        }
+
         usersRegistry.put(user.getUserId(), user);
         return true;
     }
