@@ -12,17 +12,13 @@ public class UserManager {
 
     private Map<String, User> usersRegistry;
 
-    private final UserValidator userValidator;
-
     public UserManager() {
         this.usersRegistry = new HashMap<>();
-
-        this.userValidator = new UserValidator();
     }
 
     public boolean addUser(User user) {
 
-        userValidator.validateAddUser(user);
+        UserValidator.validateAddUser(user);
 
         if (usersRegistry.containsKey(user.getUserId())) {
             throw new ValidationException("User ID already exists.");
