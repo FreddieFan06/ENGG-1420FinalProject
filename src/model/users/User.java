@@ -1,6 +1,7 @@
 package model.users;
 
 import model.enums.UserType;
+import validation.UserValidator;
 
 public abstract class User {
     private String userId;
@@ -10,7 +11,7 @@ public abstract class User {
     public User() {}
 
     public User(String userId, String name, String email) {
-        if (!isValidEmail(email)) {
+        if (!UserValidator.isValidEmail(email)) {
             throw new IllegalArgumentException("Invalid email format.");
         }
         
@@ -23,10 +24,7 @@ public abstract class User {
     public String getName() { return name; }
     public String getEmail() { return email; }
 
-    private boolean isValidEmail(String email) {
-        return (email != null) && (email.matches("^[A-Za-z0-9._+-]+@(.+)$"));
-    }
-
+    
     public abstract int getMaxBookings();
     public abstract UserType getUserType();
 }
