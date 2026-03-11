@@ -1,15 +1,12 @@
 package validation;
 
 import exception.ValidationException;
-import model.events.Concert;
-import model.events.Event;
-import model.events.Seminar;
-import model.events.Workshop;
+import model.events.*;
 import model.enums.EventStatus;
 
-public class EventValidator {
+public final class EventValidator {
 
-    public void validateAddEvent(Event event) {
+    public static void validateAddEvent(Event event) {
 
         if (event == null) {
             throw new ValidationException("Event cannot be null.");

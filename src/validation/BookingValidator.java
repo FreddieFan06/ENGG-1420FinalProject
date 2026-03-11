@@ -7,9 +7,9 @@ import model.users.User;
 
 import java.time.LocalDateTime;
 
-public class BookingValidator {
+public final class BookingValidator {
 
-    public void validateBookingInput(String bookingId, String userId, String eventId, LocalDateTime createdAt) {
+    public static void validateBookingInput(String bookingId, String userId, String eventId, LocalDateTime createdAt) {
         if (bookingId == null || bookingId.isBlank()) {
             throw new ValidationException("Booking ID is required.");
         }

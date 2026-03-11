@@ -5,9 +5,13 @@ import model.enums.EventStatus;
 import model.enums.EventType;
 import java.util.HashMap;
 import java.util.Map;
+
+import exception.ValidationException;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import validation.EventValidator;
 
 public class EventManager {
     private Map<String, Event> eventsRegistry;
@@ -15,10 +19,13 @@ public class EventManager {
     public EventManager() {
         this.eventsRegistry = new HashMap<>();
     }
-
     public boolean addEvent(Event event) {
-        if(event == null || eventsRegistry.containsKey(event.getEventId()))
-            return false;
+
+        EventValidator.validateAddEvent(event);
+
+        if (eventsRegistry.containsKey(event.getEventId())) {
+            throw new ValidationException("Event ID already exists.");
+        }
 
         eventsRegistry.put(event.getEventId(), event);
         return true;

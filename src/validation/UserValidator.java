@@ -2,11 +2,10 @@ package validation;
 
 import exception.ValidationException;
 import model.users.User;
-import model.enums.UserType;
 
-public class UserValidator {
+public final class UserValidator {
 
-    public void validateAddUser(User user) {
+    public static void validateAddUser(User user) {
 
         if (user == null) {
             throw new ValidationException("User cannot be null.");
@@ -38,7 +37,7 @@ public class UserValidator {
         }
     }
 
-    private boolean isValidEmail(String email) {
+    private static boolean isValidEmail(String email) {
         return email.matches("^[A-Za-z0-9._+-]+@(.+)$");
     }
 }
