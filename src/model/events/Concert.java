@@ -4,7 +4,7 @@ import model.enums.EventStatus;
 import model.enums.EventType;
 import java.time.LocalDateTime;
 
-public class Concert extends Event {
+public final class Concert extends Event {
     private String ageRestriction;
 
     public Concert(String eventId, String title, LocalDateTime dateTime, String location, int capacity, EventStatus status, String ageRestriction) {
