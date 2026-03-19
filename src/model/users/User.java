@@ -1,19 +1,18 @@
 package model.users;
 
+import java.util.ArrayList;
 import model.enums.UserType;
+import model.events.Event;
 
 public abstract class User {
     private String userId;
     private String name;
     private String email;
+    private ArrayList<Event> eventsCreated;
 
-    public User() {}
+//    public User() {}
 
     public User(String userId, String name, String email) {
-        if (!isValidEmail(email)) {
-            throw new IllegalArgumentException("Invalid email format.");
-        }
-        
         this.userId = userId;
         this.name = name;
         this.email = email;
@@ -23,9 +22,24 @@ public abstract class User {
     public String getName() { return name; }
     public String getEmail() { return email; }
 
-    private boolean isValidEmail(String email) {
-        return (email != null) && (email.matches("^[A-Za-z0-9._+-]+@(.+)$"));
+
+
+    public void addEvent(Event event){
+        if (event != null)
+            eventsCreated.add(event);
     }
+
+
+    public ArrayList<Event> getAllEvents(){
+        return eventsCreated;
+    }
+
+
+    /*
+        Need two extra methods:
+        1. Method that adds an event to the eventsCreated ArrayList
+        2. Method that returns all of the events in eventsCreated
+    */
 
     public abstract int getMaxBookings();
     public abstract UserType getUserType();

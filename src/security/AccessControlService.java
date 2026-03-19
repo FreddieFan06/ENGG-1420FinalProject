@@ -1,34 +1,28 @@
 package security;
 
+import model.events.Event;
 import model.enums.UserType;
 import model.users.User;
 
 public class AccessControlService {
-    public AccessControlService() {
-
-        /*if (UserType == STUDENT) {
-            Set access to 'protected'
-            Should only allow access to events
-            from the user.
-        } 
-        
-        if (UserType == STAFF) {
-            Set access to 'public';
-            Should allow access to all events.
-        }
-        
-        if (UserType == GUEST) {
-            Set access to 'private';
-            shouldn't allow any edit access.
-        }*/
-    }
-
-    public boolean canOverrideUserBookingLimit(User user) {
-        if (user.getUserType() == UserType.STAFF) {
+    public static boolean canOverrideUserBookingLimit(User user) {
+        if (user.getUserType() == UserType.STAFF)
             return true;
-        }
-        else {
+        else
             return false;
-        }
     }
+
+
+    // Create a method that takes an event, and a user as parameters.
+    // It will loop through the list of events created by that user,
+    // and compare it to the eventID
+    
+    public static boolean eventOwnership(Event event, User user) {
+        for(Event e : user.getAllEvents()) {
+            if (e.getEventId() == event.getEventId())
+                return true;
+        }
+        return false;
+    }
+
 }
