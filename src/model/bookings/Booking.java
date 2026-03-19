@@ -1,9 +1,13 @@
 package model.bookings;
 
+import exception.ValidationException;
+import validation.Validatable;
+import validation.ValidationUtils;
 import model.enums.BookingStatus;
+
 import java.time.LocalDateTime;
 
-public class Booking {
+public class Booking implements Validatable {
     private String bookingId;
     private String userId;
     private String eventId;
@@ -26,5 +30,15 @@ public class Booking {
 
     public void setBookingStatus(BookingStatus bookingStatus) {
         this.bookingStatus = bookingStatus;
+    }
+
+    // Self-validation method
+    @Override
+    public void validate() {
+        ValidationUtils.requireNonBlank(bookingId, "Booking ID is required.");
+        ValidationUtils.requireNonBlank(userId, "User ID is required.");
+        ValidationUtils.requireNonBlank(eventId, "Event ID is required.");
+        ValidationUtils.requireNonNull(createdAt, "Booking creation date is required.");
+        ValidationUtils.requireNonNull(bookingStatus, "Booking status is required.");
     }
 }
