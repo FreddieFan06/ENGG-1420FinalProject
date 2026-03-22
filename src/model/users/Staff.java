@@ -2,14 +2,16 @@ package model.users;
 
 import model.enums.UserType;
 
-public class Staff extends User {
+public final class Staff extends User {
+    private static final int MAX_BOOKINGS = 5;
+
     public Staff(String userId, String name, String email) {
-        super(userId, name, email);
+        super(userId, name, email, UserType.STAFF);
     }
 
     @Override
     public int getMaxBookings() {
-        return 5;
+        return MAX_BOOKINGS;
     }
 
     @Override

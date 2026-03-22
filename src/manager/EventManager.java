@@ -5,9 +5,20 @@ import model.enums.EventStatus;
 import model.enums.EventType;
 import java.util.HashMap;
 import java.util.Map;
+
+import exception.ValidationException;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import validation.Validatable;
+import validation.rules.ValidatorEngine;
+import validation.rules.ValidationRule;
+import validation.rules.BookingContext;
+import validation.rules.EventStatusRule;
+import validation.rules.EventCapacityRule;
+import validation.rules.UserBookingLimitRule;
 
 public class EventManager {
     private Map<String, Event> eventsRegistry;
@@ -17,8 +28,25 @@ public class EventManager {
     }
 
     public boolean addEvent(Event event) {
-        if(event == null || eventsRegistry.containsKey(event.getEventId()))
-            return false;
+        // --- START: OOP validation replacement ---
+        // For now, we can still use ValidationUtils or create custom EventRules if
+        // needed
+        if (event == null)
+            throw new ValidationException("Event cannot be null");
+        if (event.getEventId() == null || event.getEventId().isBlank())
+            throw new ValidationException("Event ID is required");
+        if (event.getTitle() == null || event.getTitle().isBlank())
+            throw new ValidationException("Event title is required");
+        if (event.getCapacity() <= 0)
+            throw new ValidationException("Event capacity must be > 0");
+        if (event.getStatus() == null)
+            throw new ValidationException("Event status is required");
+
+        // --- END: OOP validation replacement ---
+
+        if (eventsRegistry.containsKey(event.getEventId())) {
+            throw new ValidationException("Event ID already exists.");
+        }
 
         eventsRegistry.put(event.getEventId(), event);
         return true;
@@ -34,7 +62,7 @@ public class EventManager {
 
     public boolean cancelEvent(String eventId, WaitlistManager waitlistManager) {
         Event event = eventsRegistry.get(eventId);
-        if(event != null && event.getStatus() != EventStatus.CANCELLED) {
+        if (event != null && event.getStatus() != EventStatus.CANCELLED) {
             event.setStatus(EventStatus.CANCELLED);
             waitlistManager.clearWaitlist(eventId);
             return true;
@@ -45,17 +73,17 @@ public class EventManager {
 
     public List<Event> searchEvents(String titleKeyWord, EventType type) {
         List<Event> results = new ArrayList<>();
-        for(Event event : eventsRegistry.values()) {
+        for (Event event : eventsRegistry.values()) {
             boolean matchesTitle = true;
 
-            if(titleKeyWord != null && !titleKeyWord.trim().isEmpty())
+            if (titleKeyWord != null && !titleKeyWord.trim().isEmpty())
                 matchesTitle = event.getTitle().toLowerCase().contains(titleKeyWord.toLowerCase());
 
             boolean matchesType = true;
-            if(type != null)
+            if (type != null)
                 matchesType = (event.getEventType() == type);
 
-            if(matchesTitle && matchesType)
+            if (matchesTitle && matchesType)
                 results.add(event);
         }
         return results;

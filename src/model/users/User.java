@@ -1,46 +1,66 @@
 package model.users;
 
 import java.util.ArrayList;
+
+import exception.ValidationException;
 import model.enums.UserType;
 import model.events.Event;
+import validation.Validatable;
+import validation.ValidationUtils;
 
-public abstract class User {
+public abstract class User implements Validatable {
     private String userId;
     private String name;
     private String email;
     private ArrayList<Event> eventsCreated;
+    private UserType userType;
 
-//    public User() {}
-
-    public User(String userId, String name, String email) {
+    public User(String userId, String name, String email, UserType userType) {
         this.userId = userId;
         this.name = name;
         this.email = email;
+        this.userType = userType;
+        this.eventsCreated = new ArrayList<>(); // IMPORTANT
     }
 
     public String getUserId() { return userId; }
     public String getName() { return name; }
     public String getEmail() { return email; }
+    public UserType getUserType() { return userType; }
 
-
-
-    public void addEvent(Event event){
-        if (event != null)
+    public void addEvent(Event event) {
+        if (event != null) {
             eventsCreated.add(event);
+        }
     }
 
-
-    public ArrayList<Event> getAllEvents(){
+    public ArrayList<Event> getAllEvents() {
         return eventsCreated;
     }
 
-
-    /*
-        Need two extra methods:
-        1. Method that adds an event to the eventsCreated ArrayList
-        2. Method that returns all of the events in eventsCreated
-    */
-
     public abstract int getMaxBookings();
-    public abstract UserType getUserType();
+
+    @Override
+    public void validate() {
+        ValidationUtils.requireNonBlank(userId, "User ID is required.");
+        ValidationUtils.requireNonBlank(name, "User name is required.");
+        ValidationUtils.requireNonBlank(email, "Email is required.");
+
+        if (!ValidationUtils.isValidEmail(email)) {
+            throw new ValidationException("Invalid email format.");
+        }
+
+        if (userType == null) {
+            throw new ValidationException("User type is required.");
+        }
+
+        boolean validType = switch (userType) {
+            case STUDENT, STAFF, GUEST -> true;
+            default -> false;
+        };
+
+        if (!validType) {
+            throw new ValidationException("User type must be STUDENT, STAFF, or GUEST.");
+        }
+    }
 }
