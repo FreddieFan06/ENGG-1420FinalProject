@@ -3,6 +3,7 @@ package manager;
 import model.bookings.Booking;
 import model.events.Event;
 import model.users.User;
+import security.AccessControlService;
 import model.enums.BookingStatus;
 import model.enums.EventStatus;
 
@@ -25,6 +26,7 @@ public class BookingManager {
     private UserManager userManager;
     private EventManager eventManager;
     private WaitlistManager waitlistManager;
+    private AccessControlService accessControlService;
 
     public BookingManager(UserManager userManager, EventManager eventManager, WaitlistManager waitlistManager) {
         this.bookingRegistry = new HashMap<>();
