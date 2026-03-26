@@ -2,12 +2,12 @@ package gui;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.control.*;
-import manager.UserManager;
+import service.UserService;
 import model.users.*;
 
 public class UserPane extends VBox {
 
-    public UserPane(UserManager userManager) {
+    public UserPane(UserService userService) {
 
         TextField idField = new TextField();
         idField.setPromptText("User ID");
@@ -33,7 +33,7 @@ public class UserPane extends VBox {
                     default -> null;
                 };
 
-                if (user != null && userManager.addUser(user))
+                if (user != null && userService.addUser(user))
                     result.setText("User added.");
                 else
                     result.setText("Failed.");

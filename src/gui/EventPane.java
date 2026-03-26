@@ -2,14 +2,14 @@ package gui;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.control.*;
-import manager.EventManager;
+import service.EventService;
 import model.events.*;
 import model.enums.EventStatus;
 import java.time.LocalDateTime;
 
 public class EventPane extends VBox {
 
-    public EventPane(EventManager eventManager) {
+    public EventPane(EventService eventService) {
 
         TextField idField = new TextField();
         idField.setPromptText("Event ID");
@@ -50,7 +50,7 @@ public class EventPane extends VBox {
                     default -> null;
                 };
 
-                if (event != null && eventManager.addEvent(event))
+                if (event != null && eventService.addEvent(event))
                     result.setText("Event added.");
                 else
                     result.setText("Failed.");
