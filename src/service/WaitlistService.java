@@ -1,4 +1,4 @@
-package manager;
+package service;
 
 import model.bookings.Booking;
 import java.util.HashMap;
@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
-public class WaitlistManager {
+public class WaitlistService {
     private Map<String, List<Booking>> waitlists;
 
-    public WaitlistManager() {
+    public WaitlistService() {
         this.waitlists = new HashMap<>();
     }
 

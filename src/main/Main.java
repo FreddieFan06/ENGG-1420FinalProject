@@ -7,40 +7,40 @@ import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
 import gui.*;
-import manager.*;
+import service.*;
 
 
 
 public class Main extends Application {
 
-        private UserManager userManager;
-        private EventManager eventManager;
-        private WaitlistManager waitlistManager;
-        private BookingManager bookingManager;
+        private UserService userService;
+        private EventService eventService;
+        private WaitlistService waitlistService;
+        private BookingService bookingService;
 
         @Override
         public void start(Stage primaryStage) {
 
                 // Initialize Managers
-                userManager = new UserManager();
-                eventManager = new EventManager();
-                waitlistManager = new WaitlistManager();
-                bookingManager = new BookingManager(
-                                userManager,
-                                eventManager,
-                                waitlistManager);
+                userService = new UserService();
+                eventService = new EventService();
+                waitlistService = new WaitlistService();
+                bookingService = new BookingService(
+                        userService,
+                        eventService,
+                        waitlistService);
 
                 // Setup Tabs
                 TabPane root = new TabPane();
 
                 root.getTabs().add(new Tab("Users",
-                                new UserPane(userManager)));
+                                new UserPane(userService)));
 
                 root.getTabs().add(new Tab("Events",
-                                new EventPane(eventManager)));
+                                new EventPane(eventService)));
 
                 root.getTabs().add(new Tab("Bookings",
-                                new BookingPane(userManager, eventManager, bookingManager)));
+                                new BookingPane(userService, eventService, bookingService)));
 
         
                 Scene scene = new Scene(root, 700, 500);

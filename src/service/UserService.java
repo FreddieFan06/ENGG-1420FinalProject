@@ -1,4 +1,4 @@
-package manager;
+package service;
 
 import model.users.User;
 import java.util.HashMap;
@@ -8,11 +8,11 @@ import java.util.Collection;
 import exception.ValidationException;
 import validation.ValidationUtils;
 
-public class UserManager {
+public class UserService {
 
     private Map<String, User> usersRegistry;
 
-    public UserManager() {
+    public UserService() {
         this.usersRegistry = new HashMap<>();
     }
 

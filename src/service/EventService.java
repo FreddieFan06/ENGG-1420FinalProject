@@ -1,4 +1,4 @@
-package manager;
+package service;
 
 import model.events.Event;
 import model.enums.EventStatus;
@@ -12,18 +12,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import validation.Validatable;
-import validation.rules.ValidatorEngine;
-import validation.rules.ValidationRule;
-import validation.rules.BookingContext;
-import validation.rules.EventStatusRule;
-import validation.rules.EventCapacityRule;
-import validation.rules.UserBookingLimitRule;
-
-public class EventManager {
+public class EventService {
     private Map<String, Event> eventsRegistry;
 
-    public EventManager() {
+    public EventService() {
         this.eventsRegistry = new HashMap<>();
     }
 
@@ -60,11 +52,11 @@ public class EventManager {
         return eventsRegistry.values();
     }
 
-    public boolean cancelEvent(String eventId, WaitlistManager waitlistManager) {
+    public boolean cancelEvent(String eventId, WaitlistService waitlistService) {
         Event event = eventsRegistry.get(eventId);
         if (event != null && event.getStatus() != EventStatus.CANCELLED) {
             event.setStatus(EventStatus.CANCELLED);
-            waitlistManager.clearWaitlist(eventId);
+            waitlistService.clearWaitlist(eventId);
             return true;
         }
 

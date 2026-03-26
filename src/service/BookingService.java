@@ -1,11 +1,10 @@
-package manager;
+package service;
 
 import model.bookings.Booking;
 import model.events.Event;
 import model.users.User;
 import security.AccessControlService;
 import model.enums.BookingStatus;
-import model.enums.EventStatus;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -20,19 +19,19 @@ import validation.rules.UserBookingLimitRule;
 import validation.rules.ValidatorEngine;
 import exception.ValidationException;
 
-public class BookingManager {
+public class BookingService {
     private Map<String, Booking> bookingRegistry;
 
-    private UserManager userManager;
-    private EventManager eventManager;
-    private WaitlistManager waitlistManager;
+    private UserService userService;
+    private EventService eventService;
+    private WaitlistService waitlistService;
     private AccessControlService accessControlService;
 
-    public BookingManager(UserManager userManager, EventManager eventManager, WaitlistManager waitlistManager) {
+    public BookingService(UserService userService, EventService eventService, WaitlistService waitlistService) {
         this.bookingRegistry = new HashMap<>();
-        this.userManager = userManager;
-        this.eventManager = eventManager;
-        this.waitlistManager = waitlistManager;
+        this.userService = userService;
+        this.eventService = eventService;
+        this.waitlistService = waitlistService;
     }
 
     private int countActiveBookingsForUser(String userId) {
@@ -68,8 +67,8 @@ public class BookingManager {
     }
 
     public Booking createBooking(String bookingId, String userId, String eventId, LocalDateTime createdAt) {
-        User user = userManager.getUser(userId);
-        Event event = eventManager.getEvent(eventId);
+        User user = userService.getUser(userId);
+        Event event = eventService.getEvent(eventId);
 
         // --- START: New OOP validation ---
         int currentActive = countActiveBookingsForUser(userId);
@@ -108,7 +107,7 @@ public class BookingManager {
         bookingRegistry.put(bookingId, newBooking);
 
         if (assignedStatus == BookingStatus.WAITLISTED) {
-            waitlistManager.addToWaitlist(eventId, newBooking);
+            waitlistService.addToWaitlist(eventId, newBooking);
         }
 
         return newBooking;
@@ -126,9 +125,9 @@ public class BookingManager {
         String eventId = bookingToCancel.getEventId();
 
         if (previousStatus == BookingStatus.WAITLISTED)
-            waitlistManager.removeFromWaitlist(eventId, bookingToCancel.getUserId());
+            waitlistService.removeFromWaitlist(eventId, bookingToCancel.getUserId());
         else if (previousStatus == BookingStatus.CONFIRMED) {
-            Booking promotedBooking = waitlistManager.popNextFromWaitlist(eventId);
+            Booking promotedBooking = waitlistService.popNextFromWaitlist(eventId);
 
             if (promotedBooking != null) {
                 promotedBooking.setBookingStatus(BookingStatus.CONFIRMED);

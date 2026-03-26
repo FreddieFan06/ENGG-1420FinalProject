@@ -2,15 +2,15 @@ package gui;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.control.*;
-import manager.*;
+import service.*;
 import model.bookings.Booking;
 import java.time.LocalDateTime;
 
 public class BookingPane extends VBox {
 
-    public BookingPane(UserManager userManager,
-            EventManager eventManager,
-            BookingManager bookingManager) {
+    public BookingPane(UserService userService,
+                       EventService eventService,
+                       BookingService bookingService) {
 
         TextField bookingIdField = new TextField();
         bookingIdField.setPromptText("Booking ID");
@@ -25,7 +25,7 @@ public class BookingPane extends VBox {
 
         Button createBtn = new Button("Create Booking");
         createBtn.setOnAction(e -> {
-            Booking b = bookingManager.createBooking(
+            Booking b = bookingService.createBooking(
                     bookingIdField.getText(),
                     userIdField.getText(),
                     eventIdField.getText(),
@@ -40,7 +40,7 @@ public class BookingPane extends VBox {
 
         Button cancelBtn = new Button("Cancel Booking");
         cancelBtn.setOnAction(e -> {
-            boolean ok = bookingManager.cancelBooking(cancelField.getText());
+            boolean ok = bookingService.cancelBooking(cancelField.getText());
             result.setText(ok ? "Cancelled" : "Cancel failed");
         });
 
