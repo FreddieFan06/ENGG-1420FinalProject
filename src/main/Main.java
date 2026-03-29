@@ -1,13 +1,19 @@
 package main; 
 
+import analytics.AnalyticsService;
+import gui.AnalyticsPane;
+import gui.BookingPane;
+import gui.EventPane;
+import gui.UserPane;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
-
-import gui.*;
-import service.*;
+import service.BookingService;
+import service.EventService;
+import service.UserService;
+import service.WaitlistService;
 
 
 
@@ -17,6 +23,7 @@ public class Main extends Application {
         private EventService eventService;
         private WaitlistService waitlistService;
         private BookingService bookingService;
+        private AnalyticsService analyticsService;
 
         @Override
         public void start(Stage primaryStage) {
@@ -29,6 +36,7 @@ public class Main extends Application {
                         userService,
                         eventService,
                         waitlistService);
+                analyticsService = new AnalyticsService(bookingService, eventService);
 
                 // Setup Tabs
                 TabPane root = new TabPane();
@@ -41,6 +49,9 @@ public class Main extends Application {
 
                 root.getTabs().add(new Tab("Bookings",
                                 new BookingPane(userService, eventService, bookingService)));
+                                
+                root.getTabs().add(new Tab("Analytics",
+                                new AnalyticsPane(analyticsService, eventService)));
 
         
                 Scene scene = new Scene(root, 700, 500);
