@@ -1,19 +1,14 @@
 package main; 
 
-import analytics.AnalyticsService;
-import gui.AnalyticsPane;
-import gui.BookingPane;
-import gui.EventPane;
-import gui.UserPane;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
-import service.BookingService;
-import service.EventService;
-import service.UserService;
-import service.WaitlistService;
+
+import gui.*;
+import service.*;
+import analytics.AnalyticsService;
 
 
 
