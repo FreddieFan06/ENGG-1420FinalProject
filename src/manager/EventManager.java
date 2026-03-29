@@ -1,24 +1,15 @@
 package manager;
 
-import model.events.Event;
-import model.enums.EventStatus;
-import model.enums.EventType;
-import java.util.HashMap;
-import java.util.Map;
-
-import exception.ValidationException;
-
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import validation.Validatable;
-import validation.rules.ValidatorEngine;
-import validation.rules.ValidationRule;
-import validation.rules.BookingContext;
-import validation.rules.EventStatusRule;
-import validation.rules.EventCapacityRule;
-import validation.rules.UserBookingLimitRule;
+import exceptions.eventexceptions.*;
+import model.enums.EventStatus;
+import model.enums.EventType;
+import model.events.Event;
 
 public class EventManager {
     private Map<String, Event> eventsRegistry;
@@ -32,20 +23,20 @@ public class EventManager {
         // For now, we can still use ValidationUtils or create custom EventRules if
         // needed
         if (event == null)
-            throw new ValidationException("Event cannot be null");
+            throw new EventNullException("Event cannot be null");
         if (event.getEventId() == null || event.getEventId().isBlank())
-            throw new ValidationException("Event ID is required");
+            throw new InvalidEventIDException("Event ID is required");
         if (event.getTitle() == null || event.getTitle().isBlank())
-            throw new ValidationException("Event title is required");
+            throw new InvalidEventTitleException("Event title is required");
         if (event.getCapacity() <= 0)
-            throw new ValidationException("Event capacity must be > 0");
+            throw new InvalidEventCapacityException("Event capacity must be > 0");
         if (event.getStatus() == null)
-            throw new ValidationException("Event status is required");
+            throw new InvalidEventStatusException("Event status is required");
 
         // --- END: OOP validation replacement ---
 
         if (eventsRegistry.containsKey(event.getEventId())) {
-            throw new ValidationException("Event ID already exists.");
+            throw new DuplicateEventIDException("Event ID already exists.");
         }
 
         eventsRegistry.put(event.getEventId(), event);

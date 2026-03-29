@@ -2,7 +2,7 @@
 
 package validation.rules;
 
-import exception.ValidationException;
+import exceptions.eventexceptions.*;
 
 // Business rule that ensures an event has not exceeded its capacity
 public class EventCapacityRule implements ValidationRule<BookingContext> {
@@ -13,7 +13,7 @@ public class EventCapacityRule implements ValidationRule<BookingContext> {
         // If the number of confirmed bookings is greater than or equal to event
         // capacity, throw exception
         if (context.getConfirmedCount() >= context.getEvent().getCapacity()) {
-            throw new ValidationException("Event has reached full capacity.");
+            throw new EventFullException("Event has reached full capacity.");
         }
     }
 }

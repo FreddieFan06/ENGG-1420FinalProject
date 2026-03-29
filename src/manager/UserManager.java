@@ -3,9 +3,11 @@ package manager;
 import model.users.User;
 import java.util.HashMap;
 import java.util.Map;
+
+import exceptions.userexceptions.*;
+
 import java.util.Collection;
 
-import exception.ValidationException;
 import validation.ValidationUtils;
 
 public class UserManager {
@@ -22,15 +24,15 @@ public class UserManager {
         ValidationUtils.requireNonBlank(user.getUserId(), "User ID is required");
         ValidationUtils.requireNonBlank(user.getName(), "User name is required");
         if (!ValidationUtils.isValidEmail(user.getEmail())) {
-            throw new ValidationException("Invalid email format");
+            throw new InvalidEmailException("Invalid email format");
         }
         if (user.getUserType() == null) {
-            throw new ValidationException("User type is required");
+            throw new InvalidUserTypeException("User type is required");
         }
         // --- END: OOP validation replacement ---
 
         if (usersRegistry.containsKey(user.getUserId())) {
-            throw new ValidationException("User ID already exists.");
+            throw new DuplicateUserIdException("User ID already exists.");
         }
 
         usersRegistry.put(user.getUserId(), user);

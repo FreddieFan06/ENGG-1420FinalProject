@@ -2,7 +2,7 @@
 
 package validation.rules;
 
-import exception.ValidationException;
+import exceptions.userexceptions.*;
 
 // Business rule that ensures a user has not exceeded their maximum number of active bookings
 public class UserBookingLimitRule implements ValidationRule<BookingContext> {
@@ -12,7 +12,7 @@ public class UserBookingLimitRule implements ValidationRule<BookingContext> {
 
         // If the user has reached or exceeded their max bookings, throw an exception
         if (context.getUser().getMaxBookings() <= context.getUserActiveBookings()) {
-            throw new ValidationException("User has reached their active booking limit.");
+            throw new UserBookingLimitException("User has reached their active booking limit.");
         }
     }
 }

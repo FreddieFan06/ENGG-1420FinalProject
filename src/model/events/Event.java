@@ -1,12 +1,13 @@
 package model.events;
 
-import exception.ValidationException;
-import validation.Validatable;
-import validation.ValidationUtils;
+import java.time.LocalDateTime;
+
+import exceptions.eventexceptions.InvalidEventCapacityException;
+import exceptions.eventexceptions.InvalidEventStatusException;
 import model.enums.EventStatus;
 import model.enums.EventType;
-
-import java.time.LocalDateTime;
+import validation.Validatable;
+import validation.ValidationUtils;
 
 public abstract class Event implements Validatable {
     private String eventId;
@@ -51,11 +52,11 @@ public abstract class Event implements Validatable {
         ValidationUtils.requireNonBlank(title, "Event title is required.");
         ValidationUtils.requireNonBlank(location, "Event location is required.");
         ValidationUtils.requireNonNull(dateTime, "Event date and time is required.");
-        if (capacity <= 0) throw new ValidationException("Event capacity must be greater than 0.");
+        if (capacity <= 0) throw new InvalidEventCapacityException("Event capacity must be greater than 0.");
         ValidationUtils.requireNonNull(status, "Event status is required.");
 
         if (status != EventStatus.ACTIVE && status != EventStatus.CANCELLED) {
-            throw new ValidationException("Event status must be ACTIVE or CANCELLED.");
+            throw new InvalidEventStatusException("Event status must be ACTIVE or CANCELLED.");
         }
     }
 }

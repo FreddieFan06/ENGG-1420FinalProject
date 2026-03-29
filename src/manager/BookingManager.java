@@ -1,24 +1,22 @@
 package manager;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import exceptions.bookingexceptions.BookingException;
 import model.bookings.Booking;
+import model.enums.BookingStatus;
 import model.events.Event;
 import model.users.User;
 import security.AccessControlService;
-import model.enums.BookingStatus;
-import model.enums.EventStatus;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Collection;
-import java.util.List;
-
 import validation.rules.BookingContext;
 import validation.rules.EventCapacityRule;
 import validation.rules.EventStatusRule;
 import validation.rules.UserBookingLimitRule;
 import validation.rules.ValidatorEngine;
-import exception.ValidationException;
 
 public class BookingManager {
     private Map<String, Booking> bookingRegistry;
@@ -84,7 +82,7 @@ public class BookingManager {
 
         try {
             engine.validate(context);
-        } catch (ValidationException e) {
+        } catch (BookingException e) {
             System.err.println("Booking failed: " + e.getMessage());
             return null;
         }
