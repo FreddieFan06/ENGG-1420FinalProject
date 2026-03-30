@@ -1,11 +1,10 @@
 package model.bookings;
 
-import exception.ValidationException;
+import java.time.LocalDateTime;
+
+import model.enums.BookingStatus;
 import validation.Validatable;
 import validation.ValidationUtils;
-import model.enums.BookingStatus;
-
-import java.time.LocalDateTime;
 
 public class Booking implements Validatable {
     private String bookingId;

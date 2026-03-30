@@ -2,7 +2,7 @@ package model.users;
 
 import java.util.ArrayList;
 
-import exception.ValidationException;
+import exceptions.userexceptions.*;
 import model.enums.UserType;
 import model.events.Event;
 import validation.Validatable;
@@ -47,11 +47,11 @@ public abstract class User implements Validatable {
         ValidationUtils.requireNonBlank(email, "Email is required.");
 
         if (!ValidationUtils.isValidEmail(email)) {
-            throw new ValidationException("Invalid email format.");
+            throw new InvalidEmailException("Invalid email format.");
         }
 
         if (userType == null) {
-            throw new ValidationException("User type is required.");
+            throw new UserTypeMissingException("User type is required.");
         }
 
         boolean validType = switch (userType) {
@@ -60,7 +60,7 @@ public abstract class User implements Validatable {
         };
 
         if (!validType) {
-            throw new ValidationException("User type must be STUDENT, STAFF, or GUEST.");
+            throw new InvalidUserTypeException("User type must be STUDENT, STAFF, or GUEST.");
         }
     }
 }

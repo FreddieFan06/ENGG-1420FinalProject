@@ -2,7 +2,7 @@
 
 package validation.rules;
 
-import exception.ValidationException;
+import exceptions.eventexceptions.*;
 import model.enums.EventStatus;
 
 // Business rule that ensures an event is not cancelled before booking
@@ -13,7 +13,7 @@ public class EventStatusRule implements ValidationRule<BookingContext> {
 
         // IF the event status is cancelled, throw an exception
         if (context.getEvent().getStatus() == EventStatus.CANCELLED) {
-            throw new ValidationException("Cannot book a cancelled event.");
+            throw new EventCancelledException("Cannot book a cancelled event.");
         }
     }
 }

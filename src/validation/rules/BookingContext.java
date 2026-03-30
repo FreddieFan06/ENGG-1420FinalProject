@@ -2,7 +2,6 @@
 
 package validation.rules;
 
-import model.bookings.Booking;
 import model.events.Event;
 import model.users.User;
 

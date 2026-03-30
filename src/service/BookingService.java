@@ -19,7 +19,9 @@ import validation.rules.UserBookingLimitRule;
 import validation.rules.ValidatorEngine;
 
 public class BookingService {
-    private Map<String, Booking> bookingRegistry;
+    private final Map<String, Booking> bookingRegistry = new HashMap<>();
+    private final Map<String, Integer> confirmedCounts = new HashMap<>();
+    private final Map<String, String> duplicateCheck = new HashMap<>();
 
     // Tracks waitlist history for analytics
     private Map<String, Boolean> wasWaitlistedMap;
@@ -40,26 +42,24 @@ public class BookingService {
         this.waitlistService = waitlistService;
     }
 
-    private int countActiveBookingsForUser(String userId) {
-        int count = 0;
-        for (Booking b : bookingRegistry.values()) {
-            if (b.getUserId().equals(userId) && b.getBookingStatus() == BookingStatus.CONFIRMED)
-                count++;
+    public void addExistingBooking(Booking b) {
+        bookingRegistry.put(b.getBookingId(), b);
+        duplicateCheck.put(b.getUserId() + "_" + b.getEventId(), b.getBookingId());
+        if (b.getBookingStatus() == BookingStatus.CONFIRMED) {
+            confirmedCounts.merge(b.getEventId(), 1, Integer::sum);
         }
-        return count;
     }
 
-    public Booking getBooking(String bookingId) {
-        return bookingRegistry.get(bookingId);
+    public List<Booking> getConfirmedAttendees(String eventId) {
+        return bookingRegistry.values().stream()
+            .filter(b -> b.getEventId().equals(eventId) && b.getBookingStatus() == BookingStatus.CONFIRMED)
+            .collect(Collectors.toList());
     }
 
-    private int getConfirmedCountForEvent(String eventId) {
-        int count = 0;
-        for (Booking b : bookingRegistry.values()) {
-            if (b.getEventId().equals(eventId) && b.getBookingStatus() == BookingStatus.CONFIRMED)
-                count++;
-        }
-        return count;
+    public List<Booking> getWaitlistedAttendees(String eventId) {
+        return bookingRegistry.values().stream()
+            .filter(b -> b.getEventId().equals(eventId) && b.getBookingStatus() == BookingStatus.WAITLISTED)
+            .collect(Collectors.toList());
     }
 
     public void addExistingBooking(Booking booking) {
