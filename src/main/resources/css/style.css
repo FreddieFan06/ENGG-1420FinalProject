@@ -1,0 +1,72 @@
+/* Global Web Font and Background */
+.root {
+    -fx-font-family: 'Inter', 'Segoe UI', sans-serif;
+    -fx-background-color: #F8FAFC; /* Very light blue-gray */
+}
+
+/* Sidebar: Deep Navy Web Look */
+.sidebar {
+    -fx-background-color: #0F172A; /* Slate 900 */
+    -fx-padding: 30 0 0 0;
+    -fx-pref-width: 260px;
+}
+
+.nav-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94A3B8;
+    -fx-padding: 12 25;
+    -fx-font-size: 15px;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+}
+
+.nav-item:hover {
+    -fx-background-color: #1E293B;
+    -fx-text-fill: white;
+}
+
+.nav-item-active {
+    -fx-background-color: #2563EB; /* Bright Blue Action Color */
+    -fx-text-fill: white;
+}
+
+/* Content Area */
+.content-area {
+    -fx-padding: 40;
+}
+
+.page-header {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1E293B;
+}
+
+/* Cards: The "Web Box" Look */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 15, 0, 0, 5);
+}
+
+/* Modern Inputs */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 8;
+    -fx-padding: 10;
+}
+
+.text-field:focused {
+    -fx-border-color: #2563EB;
+}
+
+/* Primary Web Button */
+.button-primary {
+    -fx-background-color: #2563EB;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}

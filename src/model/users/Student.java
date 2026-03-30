@@ -13,9 +13,4 @@ public final class Student extends User {
     public int getMaxBookings() {
         return MAX_BOOKINGS;
     }
-
-    @Override
-    public UserType getUserType() {
-        return UserType.STUDENT;
-    }
 }

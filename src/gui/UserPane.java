@@ -1,48 +1,54 @@
 package gui;
 
-import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.layout.*;
 import javafx.scene.control.*;
-import manager.UserManager;
-import model.users.*;
+import service.UserService;
+import model.enums.UserType;
 
 public class UserPane extends VBox {
 
-    public UserPane(UserManager userManager) {
+    public UserPane(UserService userService) {
+        setPadding(new Insets(30));
+        setSpacing(25);
+        setAlignment(Pos.TOP_LEFT);
 
-        TextField idField = new TextField();
-        idField.setPromptText("User ID");
+        // Page Title
+        Label pageTitle = new Label("User Directory");
+        pageTitle.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
+        // --- CARD: REGISTER USER ---
+        VBox createCard = new VBox(15);
+        createCard.getStyleClass().add("card");
+        createCard.setMaxWidth(600);
+
+        Label createHeader = new Label("Register New User");
+        createHeader.getStyleClass().add("header-text");
+
+        GridPane form = new GridPane();
+        form.setHgap(15);
+        form.setVgap(15);
+
+        TextField userIdField = new TextField();
         TextField nameField = new TextField();
-        nameField.setPromptText("Name");
+        ComboBox<UserType> typeBox = new ComboBox<>();
+        typeBox.getItems().addAll(UserType.values()); // Populates from your enum
+        typeBox.setPromptText("Select Role...");
 
-        TextField emailField = new TextField();
-        emailField.setPromptText("Email");
+        form.add(new Label("User ID:"), 0, 0);
+        form.add(userIdField, 1, 0);
+        form.add(new Label("Full Name:"), 0, 1);
+        form.add(nameField, 1, 1);
+        form.add(new Label("Role:"), 0, 2);
+        form.add(typeBox, 1, 2);
 
-        ComboBox<String> typeBox = new ComboBox<>();
-        typeBox.getItems().addAll("Student", "Staff", "Guest");
+        Button registerBtn = new Button("Register User");
+        registerBtn.getStyleClass().add("primary-button");
 
-        Label result = new Label();
+        createCard.getChildren().addAll(createHeader, form, registerBtn);
 
-        Button addBtn = new Button("Add User");
-        addBtn.setOnAction(e -> {
-            try {
-                User user = switch (typeBox.getValue()) {
-                    case "Student" -> new Student(idField.getText(), nameField.getText(), emailField.getText());
-                    case "Staff" -> new Staff(idField.getText(), nameField.getText(), emailField.getText());
-                    case "Guest" -> new Guest(idField.getText(), nameField.getText(), emailField.getText());
-                    default -> null;
-                };
-
-                if (user != null && userManager.addUser(user))
-                    result.setText("User added.");
-                else
-                    result.setText("Failed.");
-            } catch (Exception ex) {
-                result.setText(ex.getMessage());
-            }
-        });
-
-        setSpacing(10);
-        getChildren().addAll(idField, nameField, emailField, typeBox, addBtn, result);
+        // Add everything to the page
+        getChildren().addAll(pageTitle, createCard);
     }
 }
