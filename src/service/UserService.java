@@ -3,9 +3,11 @@ package service;
 import model.users.User;
 import java.util.HashMap;
 import java.util.Map;
+
+import exceptions.userexceptions.*;
+
 import java.util.Collection;
 
-import exception.ValidationException;
 import validation.ValidationUtils;
 
 public class UserService {
@@ -22,15 +24,15 @@ public class UserService {
         ValidationUtils.requireNonBlank(user.getUserId(), "User ID is required");
         ValidationUtils.requireNonBlank(user.getName(), "User name is required");
         if (!ValidationUtils.isValidEmail(user.getEmail())) {
-            throw new ValidationException("Invalid email format");
+            throw new InvalidEmailException("Invalid email format");
         }
         if (user.getUserType() == null) {
-            throw new ValidationException("User type is required");
+            throw new InvalidUserTypeException("User type is required");
         }
         // --- END: OOP validation replacement ---
 
         if (usersRegistry.containsKey(user.getUserId())) {
-            throw new ValidationException("User ID already exists.");
+            throw new DuplicateUserIdException("User ID already exists.");
         }
 
         usersRegistry.put(user.getUserId(), user);
@@ -51,5 +53,33 @@ public class UserService {
 
     public boolean userExists(String userId) {
         return usersRegistry.containsKey(userId);
+    }
+
+    public User login(String userId, String password) {
+         User user = usersRegistry.get(userId);
+         
+         if (user != null && password.equals("1234")) 
+            return user;
+         return null;
+    }
+
+    public void registerUser(User newUser) {
+        newUser.validate();
+        if (usersRegistry.containsKey(newUser.getUserId()))
+            throw new RuntimeException("User ID already exists!");
+        
+        usersRegistry.put(newUser.getUserId(), newUser);
+    }
+
+    public boolean authenticate(String userId, String providedPassword) {
+        User user = usersRegistry.get(userId);
+        if (user == null) return false;
+
+        // Logic: Password is the part of the email BEFORE the @ sign
+        String email = user.getEmail();
+        if (email == null || !email.contains("@")) return false;
+        
+        String expectedPassword = email.split("@")[0];
+        return expectedPassword.equals(providedPassword);
     }
 }

@@ -1,54 +1,46 @@
 package gui;
 
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.geometry.Pos;
+import model.users.User;
 import service.*;
-import model.bookings.Booking;
-import java.time.LocalDateTime;
 
 public class BookingPane extends VBox {
+    public BookingPane(User currentUser, UserService us, EventService es, BookingService bs) {
+        getStyleClass().add("content-area");
+        setSpacing(30);
+        
+        // 1. Center the entire page content horizontally
+        this.setAlignment(Pos.TOP_CENTER); 
 
-    public BookingPane(UserService userService,
-                       EventService eventService,
-                       BookingService bookingService) {
+        // Header Section
+        Label title = new Label("Event Bookings");
+        title.getStyleClass().add("page-header");
+        
+        Label subTitle = new Label("Manage reservations and waitlists for campus events.");
+        subTitle.setStyle("-fx-text-fill: #64748B;");
 
-        TextField bookingIdField = new TextField();
-        bookingIdField.setPromptText("Booking ID");
+        VBox header = new VBox(5, title, subTitle);
+        header.setAlignment(Pos.CENTER); // Center text in the header
 
-        TextField userIdField = new TextField();
-        userIdField.setPromptText("User ID");
+        // Action Card
+        VBox card = new VBox(20);
+        card.getStyleClass().add("card");
+        card.setMaxWidth(600);
+        
+        // 2. Align card internal elements to the center
+        card.setAlignment(Pos.CENTER); 
 
         TextField eventIdField = new TextField();
-        eventIdField.setPromptText("Event ID");
+        eventIdField.setPromptText("Enter Event ID (e.g., CONC-101)");
+        eventIdField.setMaxWidth(400); // Prevent the field from being too wide
+        
+        Button bookBtn = new Button("Confirm Booking");
+        bookBtn.getStyleClass().add("button-primary");
 
-        Label result = new Label();
+        card.getChildren().addAll(new Label("Quick Reserve"), eventIdField, bookBtn);
 
-        Button createBtn = new Button("Create Booking");
-        createBtn.setOnAction(e -> {
-            Booking b = bookingService.createBooking(
-                    bookingIdField.getText(),
-                    userIdField.getText(),
-                    eventIdField.getText(),
-                    LocalDateTime.now());
-
-            result.setText(b != null ? "Booking: " + b.getBookingStatus()
-                    : "Booking failed");
-        });
-
-        TextField cancelField = new TextField();
-        cancelField.setPromptText("Booking ID to cancel");
-
-        Button cancelBtn = new Button("Cancel Booking");
-        cancelBtn.setOnAction(e -> {
-            boolean ok = bookingService.cancelBooking(cancelField.getText());
-            result.setText(ok ? "Cancelled" : "Cancel failed");
-        });
-
-        setSpacing(10);
-        getChildren().addAll(
-                bookingIdField, userIdField, eventIdField,
-                createBtn,
-                cancelField, cancelBtn,
-                result);
+        getChildren().addAll(header, card);
     }
 }
