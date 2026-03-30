@@ -6,9 +6,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import gui.*;
 import service.*;
-import io.DataLoader;
-import model.users.User;
-import java.io.File;
+import analytics.AnalyticsService;
 
 public class Main extends Application {
     private Stage primaryStage;
@@ -33,11 +31,11 @@ public class Main extends Application {
         // BookingService links the other three together
         this.bookingService = new BookingService(userService, eventService, waitlistService);
 
-        try {
-            String sep = File.separator;
-            String baseDir = System.getProperty("user.dir") + sep + "src" + sep + "main" + sep + "resources" + sep + "data" + sep;
-            
-            System.out.println("📂 Loading data from: " + baseDir);
+        private UserService userService;
+        private EventService eventService;
+        private WaitlistService waitlistService;
+        private BookingService bookingService;
+        private AnalyticsService analyticsService;
 
             DataLoader.loadUsers(baseDir + "users.csv").values().forEach(userService::addUser);
             DataLoader.loadEvents(baseDir + "events.csv").values().forEach(eventService::addEvent);
@@ -50,10 +48,15 @@ public class Main extends Application {
         }
     }
 
-    public void showLoginView() {
-        // Logic inside LoginPane will use userService and the switch-view runnables
-        updateRoot(new LoginPane(userService, this::showDashboardView, this::showRegisterView));
-    }
+                // Initialize Managers
+                userService = new UserService();
+                eventService = new EventService();
+                waitlistService = new WaitlistService();
+                bookingService = new BookingService(
+                        userService,
+                        eventService,
+                        waitlistService);
+                analyticsService = new AnalyticsService(bookingService, eventService);
 
     public void showRegisterView() {
         updateRoot(new RegisterPane(userService, this::showLoginView));
@@ -73,19 +76,11 @@ public class Main extends Application {
         sidebar.addNavigationItem("🗓", "All Events", explorerPage);
         sidebar.addNavigationItem("🎟", "My Schedule", bookingPage);
 
-        // 4. Staff-only functionality
-        if (user.getUserType() == model.enums.UserType.STAFF) {
-            sidebar.addNavigationItem("➕", "Create Event", new CreateEventPane(eventService));
-        }
-
-        // 5. Construct the UI Shell
-        BorderPane shell = new BorderPane();
-        shell.getStyleClass().add("root"); // Applies global background from CSS
-        shell.setLeft(sidebar);
-        shell.setCenter(contentArea);
-        
-        // Default View
-        contentArea.getChildren().add(explorerPage);
+                root.getTabs().add(new Tab("Bookings",
+                                new BookingPane(userService, eventService, bookingService)));
+                                
+                root.getTabs().add(new Tab("Analytics",
+                                new AnalyticsPane(analyticsService, eventService)));
 
         updateRoot(shell);
     }
@@ -109,7 +104,5 @@ public class Main extends Application {
         }
     }
 
-    public static void main(String[] args) { 
-        launch(args); 
-    }
+        // You don't need a main method here because Launcher.java handles it
 }
