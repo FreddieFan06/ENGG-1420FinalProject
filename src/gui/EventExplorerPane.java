@@ -23,7 +23,7 @@ public class EventExplorerPane extends VBox {
         setSpacing(20);
         setPadding(new Insets(40));
 
-        // 1. Header & Search Section
+        // Header & Search Section
         Label header = new Label("Event Explorer");
         header.getStyleClass().add("page-header");
 
@@ -31,30 +31,22 @@ public class EventExplorerPane extends VBox {
         searchField.getStyleClass().add("text-field");
         searchField.setOnKeyReleased(e -> handleSearch());
 
-        // 2. Scrollable Container
+        // Scrollable Container
         ScrollPane scrollPane = new ScrollPane(cardsContainer);
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
-        // 3. The Reactive Bridge
-        // This ensures that if a Staff member adds an event, it pops up immediately
-        eventService.getObservableEvents().addListener((ListChangeListener<Event>) change -> {
-            // We refresh the full view on change to respect the current search filter
-            handleSearch();
-        });
+        // Reactive listener: refresh cards on events change
+        eventService.getObservableEvents().addListener((ListChangeListener<Event>) change -> handleSearch());
 
-        // Initial Load
+        // Initial load
         handleSearch();
 
         getChildren().addAll(header, searchField, scrollPane);
     }
 
-    /**
-     * Filters the displayed cards based on the search field text.
-     * This uses the eventService field, resolving the "unused" warning.
-     */
     private void handleSearch() {
         String query = searchField.getText().toLowerCase().trim();
         cardsContainer.getChildren().clear();
@@ -70,7 +62,8 @@ public class EventExplorerPane extends VBox {
         card.setAlignment(Pos.CENTER_LEFT);
 
         VBox info = new VBox(5);
-        Label t = new Label(event.getTitle());
+        // Display title AND Event ID
+        Label t = new Label(event.getTitle() + "  [" + event.getEventId() + "]");
         t.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
 
         String capInfo = bookingService.getAttendeeCount(event.getEventId()) + "/" + event.getCapacity();
@@ -111,19 +104,19 @@ public class EventExplorerPane extends VBox {
             wait.forEach(b -> waitList.getChildren().add(new Label("• " + b.getUserId())));
 
         Button close = new Button("Close");
-        close.getStyleClass().add("button-primary"); // Use your CSS style
+        close.getStyleClass().add("button-primary");
         close.setOnAction(ev -> st.close());
 
         root.getChildren().addAll(l1, confList, new Separator(), l2, waitList, close);
 
-        // Add your stylesheet to the popup so the "Close" button looks right
         Scene scene = new Scene(root, 350, 500);
         if (getScene() != null) {
             scene.getStylesheets().addAll(getScene().getStylesheets());
         }
 
         st.setScene(scene);
-        st.setTitle("Attendees - " + e.getTitle());
+        // Popup title now includes Event ID
+        st.setTitle("Attendees - " + e.getEventId() + " | " + e.getTitle());
         st.show();
     }
 }
