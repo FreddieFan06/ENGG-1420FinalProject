@@ -1,4 +1,4 @@
-package analytics;
+package service.analytics;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,11 +20,10 @@ public class AnalyticsService {
         this.eventService = eventService;
     }
 
-    
     // Get all bookings for a specific event
-     
+
     private List<Booking> getBookingsForEvent(String eventId) {
-        Collection<Booking> allBookings = bookingService.getAllBookings();
+        Collection<Booking> allBookings = bookingService.getConfirmedAttendees(eventId);
         List<Booking> eventBookings = new ArrayList<>();
         List<Booking> tempList = new ArrayList<>(allBookings);
 
@@ -102,18 +101,6 @@ public class AnalyticsService {
 
         int everWaitlisted = 0;
         int convertedToConfirmed = 0;
-
-        for (int i = 0; i < bookings.size(); i++) {
-            Booking booking = bookings.get(i);
-
-            if (bookingService.wasEverWaitlisted(booking.getBookingId())) {
-                everWaitlisted++;
-
-                if (booking.getBookingStatus() == BookingStatus.CONFIRMED) {
-                    convertedToConfirmed++;
-                }
-            }
-        }
 
         if (everWaitlisted == 0) {
             return 0.0;

@@ -1,7 +1,9 @@
 package service;
 
+import io.DataWriter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import java.io.IOException;
 import java.util.*;
 import exceptions.eventexceptions.*;
 import model.enums.EventStatus;
@@ -11,13 +13,32 @@ import model.events.Event;
 public class EventService {
     // Standard Map for logic and fast O(1) lookups
     private Map<String, Event> eventsRegistry;
+    private String eventCsvPath;
+    private boolean persistEnabled;
     
     // The "Bridge" to the UI. Any ListView bound to this will auto-refresh.
     private final ObservableList<Event> observableEvents;
 
     public EventService() {
+        this.persistEnabled = false;
         this.eventsRegistry = new HashMap<>();
         this.observableEvents = FXCollections.observableArrayList();
+    }
+
+    public void enablePersistence(String csvPath) {
+        this.eventCsvPath = csvPath;
+        this.persistEnabled = true;
+    }
+
+    private void saveEvents() {
+        if (!persistEnabled || eventCsvPath == null || eventCsvPath.isBlank()) {
+            return;
+        }
+        try {
+            DataWriter.saveEvents(eventCsvPath, getAllEvents());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to persist events: " + e.getMessage(), e);
+        }
     }
 
     public boolean addEvent(Event event) {
@@ -42,6 +63,8 @@ public class EventService {
         
         // 2. Add to the ObservableList (UI Sync)
         observableEvents.add(event);
+
+        saveEvents();
         
         return true;
     }

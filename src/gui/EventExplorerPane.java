@@ -72,11 +72,11 @@ public class EventExplorerPane extends VBox {
         VBox info = new VBox(5);
         Label t = new Label(event.getTitle());
         t.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
-        
+
         String capInfo = bookingService.getAttendeeCount(event.getEventId()) + "/" + event.getCapacity();
         Label d = new Label(event.getEventType() + " | Capacity: " + capInfo);
         d.setStyle("-fx-text-fill: #64748B;");
-        
+
         info.getChildren().addAll(t, d);
 
         Region spacer = new Region();
@@ -94,32 +94,34 @@ public class EventExplorerPane extends VBox {
         Stage st = new Stage();
         VBox root = new VBox(15);
         root.setPadding(new Insets(25));
-        
+
         Label l1 = new Label("Confirmed Attendees:");
         l1.setStyle("-fx-font-weight: bold;");
         VBox confList = new VBox(5);
-        bookingService.getConfirmedAttendees(e.getEventId()).forEach(b -> 
-            confList.getChildren().add(new Label("• " + b.getUserId())));
+        bookingService.getConfirmedAttendees(e.getEventId())
+                .forEach(b -> confList.getChildren().add(new Label("• " + b.getUserId())));
 
         Label l2 = new Label("Waitlist Queue:");
         l2.setStyle("-fx-font-weight: bold;");
         VBox waitList = new VBox(5);
         var wait = bookingService.getWaitlistedAttendees(e.getEventId());
-        if (wait.isEmpty()) waitList.getChildren().add(new Label("No one waiting."));
-        else wait.forEach(b -> waitList.getChildren().add(new Label("• " + b.getUserId())));
+        if (wait.isEmpty())
+            waitList.getChildren().add(new Label("No one waiting."));
+        else
+            wait.forEach(b -> waitList.getChildren().add(new Label("• " + b.getUserId())));
 
         Button close = new Button("Close");
         close.getStyleClass().add("button-primary"); // Use your CSS style
         close.setOnAction(ev -> st.close());
 
         root.getChildren().addAll(l1, confList, new Separator(), l2, waitList, close);
-        
+
         // Add your stylesheet to the popup so the "Close" button looks right
         Scene scene = new Scene(root, 350, 500);
         if (getScene() != null) {
             scene.getStylesheets().addAll(getScene().getStylesheets());
         }
-        
+
         st.setScene(scene);
         st.setTitle("Attendees - " + e.getTitle());
         st.show();
