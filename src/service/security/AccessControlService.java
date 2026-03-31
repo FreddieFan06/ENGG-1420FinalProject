@@ -1,4 +1,4 @@
-package security;
+package service.security;
 
 import model.events.Event;
 import model.enums.UserType;

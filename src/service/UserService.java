@@ -1,6 +1,8 @@
 package service;
 
+import io.DataWriter;
 import model.users.User;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,9 +15,28 @@ import validation.ValidationUtils;
 public class UserService {
 
     private Map<String, User> usersRegistry;
+    private String userCsvPath;
+    private boolean persistEnabled;
 
     public UserService() {
         this.usersRegistry = new HashMap<>();
+        this.persistEnabled = false;
+    }
+
+    public void enablePersistence(String csvPath) {
+        this.userCsvPath = csvPath;
+        this.persistEnabled = true;
+    }
+
+    private void saveUsers() {
+        if (!persistEnabled || userCsvPath == null || userCsvPath.isBlank()) {
+            return;
+        }
+        try {
+            DataWriter.saveUsers(userCsvPath, getAllUsers());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to persist users: " + e.getMessage(), e);
+        }
     }
 
     public boolean addUser(User user) {
@@ -36,6 +57,7 @@ public class UserService {
         }
 
         usersRegistry.put(user.getUserId(), user);
+        saveUsers();
         return true;
     }
 
@@ -69,6 +91,7 @@ public class UserService {
             throw new RuntimeException("User ID already exists!");
         
         usersRegistry.put(newUser.getUserId(), newUser);
+        saveUsers();
     }
 
     public boolean authenticate(String userId, String providedPassword) {

@@ -1,6 +1,5 @@
 package gui;
 
-import analytics.AnalyticsService;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -8,6 +7,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import model.events.Event;
 import service.EventService;
+import service.analytics.AnalyticsService;
 
 import java.util.ArrayList;
 import java.util.Collection;

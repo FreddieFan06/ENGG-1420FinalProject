@@ -6,7 +6,9 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import gui.*;
 import service.*;
-import analytics.AnalyticsService;
+import io.DataLoader;
+import model.users.User;
+import java.io.File;
 
 public class Main extends Application {
     private Stage primaryStage;
@@ -31,32 +33,33 @@ public class Main extends Application {
         // BookingService links the other three together
         this.bookingService = new BookingService(userService, eventService, waitlistService);
 
-        private UserService userService;
-        private EventService eventService;
-        private WaitlistService waitlistService;
-        private BookingService bookingService;
-        private AnalyticsService analyticsService;
+        try {
+            String sep = File.separator;
+            String baseDir = System.getProperty("user.dir") + sep + "src" + sep + "main" + sep + "resources" + sep
+                    + "data" + sep;
+
+            System.out.println("📂 Loading data from: " + baseDir);
 
             DataLoader.loadUsers(baseDir + "users.csv").values().forEach(userService::addUser);
             DataLoader.loadEvents(baseDir + "events.csv").values().forEach(eventService::addEvent);
             DataLoader.loadBookings(baseDir + "bookings.csv").forEach(bookingService::addExistingBooking);
-            
+
+            // Enable persistence once initial load is complete.
+            userService.enablePersistence(baseDir + "users.csv");
+            eventService.enablePersistence(baseDir + "events.csv");
+            bookingService.enablePersistence(baseDir + "bookings.csv");
+
             System.out.println("✅ Data Persistence Active.");
         } catch (Exception e) {
             System.err.println("❌ CSV Load Failure: " + e.getMessage());
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
     }
 
-                // Initialize Managers
-                userService = new UserService();
-                eventService = new EventService();
-                waitlistService = new WaitlistService();
-                bookingService = new BookingService(
-                        userService,
-                        eventService,
-                        waitlistService);
-                analyticsService = new AnalyticsService(bookingService, eventService);
+    public void showLoginView() {
+        // Logic inside LoginPane will use userService and the switch-view runnables
+        updateRoot(new LoginPane(userService, this::showDashboardView, this::showRegisterView));
+    }
 
     public void showRegisterView() {
         updateRoot(new RegisterPane(userService, this::showLoginView));
@@ -68,19 +71,27 @@ public class Main extends Application {
 
         // 1. Initialize the NEW reactive Explorer (Passes BOTH services)
         EventExplorerPane explorerPage = new EventExplorerPane(eventService, bookingService);
-        
+
         // 2. Initialize other pages
         BookingPane bookingPage = new BookingPane(user, userService, eventService, bookingService);
-        
+
         // 3. Setup Navigation
         sidebar.addNavigationItem("🗓", "All Events", explorerPage);
         sidebar.addNavigationItem("🎟", "My Schedule", bookingPage);
 
-                root.getTabs().add(new Tab("Bookings",
-                                new BookingPane(userService, eventService, bookingService)));
-                                
-                root.getTabs().add(new Tab("Analytics",
-                                new AnalyticsPane(analyticsService, eventService)));
+        // 4. Staff-only functionality
+        if (user.getUserType() == model.enums.UserType.STAFF) {
+            sidebar.addNavigationItem("➕", "Create Event", new CreateEventPane(eventService));
+        }
+
+        // 5. Construct the UI Shell
+        BorderPane shell = new BorderPane();
+        shell.getStyleClass().add("root"); // Applies global background from CSS
+        shell.setLeft(sidebar);
+        shell.setCenter(contentArea);
+
+        // Default View
+        contentArea.getChildren().add(explorerPage);
 
         updateRoot(shell);
     }
@@ -91,7 +102,7 @@ public class Main extends Application {
         } else {
             primaryStage.getScene().setRoot(root);
         }
-        
+
         // Global CSS Injection
         try {
             primaryStage.getScene().getStylesheets().clear();
@@ -99,10 +110,12 @@ public class Main extends Application {
             if (cssUrl != null) {
                 primaryStage.getScene().getStylesheets().add(cssUrl.toExternalForm());
             }
-        } catch (Exception e) { 
-            System.err.println("❌ CSS Error: " + e.getMessage()); 
+        } catch (Exception e) {
+            System.err.println("❌ CSS Error: " + e.getMessage());
         }
     }
 
-        // You don't need a main method here because Launcher.java handles it
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
