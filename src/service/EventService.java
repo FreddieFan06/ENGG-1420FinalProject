@@ -69,9 +69,7 @@ public class EventService {
         return true;
     }
 
-    /**
-     * Used by UI components (like EventExplorer) to "listen" for changes.
-     */
+
     public ObservableList<Event> getObservableEvents() {
         return observableEvents;
     }
@@ -93,9 +91,7 @@ public class EventService {
         if (event != null && event.getStatus() != EventStatus.CANCELLED) {
             event.setStatus(EventStatus.CANCELLED);
             waitlistService.clearWaitlist(eventId);
-            
-            // Note: Since the object in the list is the same object in the map,
-            // the UI will reflect the status change if you have a CellFactory set up.
+
             return true;
         }
 

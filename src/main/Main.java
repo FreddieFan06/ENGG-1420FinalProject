@@ -38,7 +38,7 @@ public class Main extends Application {
             String baseDir = System.getProperty("user.dir") + sep + "src" + sep + "main" + sep + "resources" + sep
                     + "data" + sep;
 
-            System.out.println("📂 Loading data from: " + baseDir);
+            System.out.println("Loading data from: " + baseDir);
 
             DataLoader.loadUsers(baseDir + "users.csv").values().forEach(userService::addUser);
             DataLoader.loadEvents(baseDir + "events.csv").values().forEach(eventService::addEvent);
@@ -49,9 +49,9 @@ public class Main extends Application {
             eventService.enablePersistence(baseDir + "events.csv");
             bookingService.enablePersistence(baseDir + "bookings.csv");
 
-            System.out.println("✅ Data Persistence Active.");
+            System.out.println("Data Persistence Active.");
         } catch (Exception e) {
-            System.err.println("❌ CSV Load Failure: " + e.getMessage());
+            System.err.println("CSV Load Failure: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -111,7 +111,7 @@ public class Main extends Application {
                 primaryStage.getScene().getStylesheets().add(cssUrl.toExternalForm());
             }
         } catch (Exception e) {
-            System.err.println("❌ CSS Error: " + e.getMessage());
+            System.err.println("CSS Error: " + e.getMessage());
         }
     }
 

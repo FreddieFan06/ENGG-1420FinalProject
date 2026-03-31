@@ -19,11 +19,7 @@ public class WaitlistService {
     public WaitlistService() {
         this.waitlists = new ConcurrentHashMap<>();
     }
-
-    /**
-     * Helper method to safely initialize or get an event's waitlist queue.
-     * We use a synchronized LinkedHashMap to guarantee FIFO order AND thread safety.
-     */
+    
     private Map<String, Booking> getEventWaitlist(String eventId) {
         return waitlists.computeIfAbsent(eventId, k -> Collections.synchronizedMap(new LinkedHashMap<>()));
     }

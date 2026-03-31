@@ -9,7 +9,6 @@ import model.bookings.Booking;
 import model.enums.BookingStatus;
 
 import model.events.Event;
-import model.users.User;
 import validation.rules.*;
 
 public class BookingService {
